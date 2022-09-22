@@ -8,6 +8,8 @@ TODO (Author's note):
 - nbt_convert.py: -help says that DICOMs are returned and stored in out. Not true.
 - nbt_convert.py: adjust arg names in -help to match README.md
 - nbt_convert.py: check fieldmap handling [single, all, none]. What is fmriprep doing with multiple fieldmaps in a single and multiple sessions?
+- nbt_tedana.py: adjust arg names in -help to match README.md
+- tedana.py: finish README
 
 ## nbt_define.py
 
@@ -23,5 +25,14 @@ nbt_convert performs BIDS-compliant dicom-to-nifti file conversion according to 
 
 
 ## nbt_tedana.py
+
+**Usage: nbt_tedana.py [OPTIONAL ARGUMENTS] BIDSbase fMRIprepID**
+
+nbt_tedana.py performs tedana multi-echo ICA and optimal combination on fMRIprep ouput. ANTs-based normalization and FSL-based masking is performed on the preprocessed data. fMRIprep must have been performed using the --me-output-echos option. A directory **BIDSbase**
+
+nbt_tedana.py requires Python 3.XX and some additional packages (see imports in nbt_tedana.py). For more information type ./nbt_tedana.py -h.
+
+
+
 ## nbt_prettyjson.py
 ## nbt_funcon.py
