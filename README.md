@@ -1,6 +1,6 @@
 # nbt
 
-nbt (nic bids tools) is a set of tools facilitating BIDS-conversion, fMRIprep-based preprocessing and analyses of BIDS-compliant datasets.
+nbt (nic bids tools) contains a collection of python scripts facilitating BIDS-conversion, fMRIprep-based preprocessing and analyses of BIDS-compliant datasets.
 
 TODO (Author's note): 
 - change study_json to data_json in nbt_define.py
