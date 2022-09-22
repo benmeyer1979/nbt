@@ -1,6 +1,6 @@
 # nbt
 
-nbt (nic bids tools) comprises a set of tools to facilitate BIDS-conversion and fMRIprep-based data preprocessing.
+nbt (nic bids tools) is a set of tools facilitating BIDS-conversion, fMRIprep-based preprocessing and analyses of BIDS-compliant datasets.
 
 TODO (Author's note): 
 - change study_json to data_json in nbt_define.py
@@ -36,3 +36,5 @@ nbt_tedana.py performs tedana multi-echo ICA and optimal combination on partiall
 nbt_prettyjson.py pretty prints json files (input file: **ugly_json**, output file: **pretty_json**)
 
 ## nbt_funcon.py
+
+**Work in progress**
