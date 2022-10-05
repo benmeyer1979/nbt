@@ -13,7 +13,7 @@ TODO (Author's note):
 
 ## nbt_define.py
 
-**Usage: ./nbt_define.py [OPTIONAL ARGUMENTS] template_json  raw_mri data_json**
+**Usage: nbt_define.py [OPTIONAL ARGUMENTS] template_json  raw_mri data_json**
 
 nbt_define.py assigns BIDS key-value pairs to each DICOM image in **raw_mri** according to a json-formatted template file (**template_json**). nbt_define.py returns a json file (**data_json**) containing BIDS key-value pairs for all DICOM images with matches in **template_json**. Example template files can be found here. **raw_mri** must be organized in subject and session subdirectories [e.g. raw/sub1/session1, raw/sub1/session2, raw/sub2/...]. nbt_define.py requires Python 3.XX plus some further packages (see imports in nbt_define.py). For more information type ./nbt_define.py -h.
 
