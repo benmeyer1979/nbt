@@ -97,8 +97,6 @@ def nbt_convert():
     base_dest = args.outdir
 
     if args.license is not None:
-        sysstr = 'mkdir -p ' + base_dest
-        print(sysstr)
         sysstr = 'cp ' + args.license + ' ' + base_dest + '/license.txt'
         print(sysstr)
         os.system(sysstr)
