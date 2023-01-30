@@ -17,7 +17,9 @@ def nbt_tedana():
     "nbt_tedana.py performs tedana multi-echo ICA and optimal "
     "combination. ANTs-based normalization and FSL-based masking is performed "
     "on the preprocessed data. fMRIprep preprocessed data with "
-    "--me-output-echos option chosen is required.")
+    "--me-output-echos option chosen is required. If only one anatomical image "
+    "has been acquired in a multi-session experiment, please indicate the session ID of the "
+    "anatomical scan.")
 
     parser.add_argument("base", help=
     "fmriprep directory including derivatives older.")
@@ -31,6 +33,8 @@ def nbt_tedana():
     "list of subject identifiers for processing", nargs='+', required=True)
     parser.add_argument("-sess", "--sessions", help=
     "list of session identifiers for processing", nargs='+',required=True)
+    parser.add_argument("-anat", "--anat_session", help=
+    "Session in which anatomical T1w image has been acquired. Location of T1toMNI transform",type=str)
     parser.add_argument("-et", "--echotimes", help=
     "list of echo times, e.g. ", nargs='+', 
     default=['12', '28.24', '44.48', '60.72'])
@@ -84,23 +88,31 @@ def nbt_tedana():
 
             os.system(sys_str)
 
-            boldToMni_suf = '*orig_to-T1w*.txt'
+            #Try this transform for BOLD to T1w mapping
+            BoldToT1_suf = '*' + fmriprepID + '*scanner_to-T1w*.txt'
+            BoldToT1 = glob(op.join(deriv_dir, substr, sesstr, 
+                                        'func',BoldToT1_suf))
+            #Otherwise use the following. The transform is only generated 
+            #when multiple T1 images exist.
+            if not BoldToT1:
+                BoldToT1_suf = '*orig_to-T1w*.txt'
+                BoldToT1 = glob(op.join(deriv_dir, substr, sesstr, 
+                                        'anat',BoldToT1_suf))
+
             t1ToMni_suf   = '*T1w_to-MNI*.h5'
             boldref_suf   = '*' + fmriprepID + '*_boldref.nii.gz'
             brainmask_suf = '*' + fmriprepID + '*-brain_mask.nii.gz'
-
-
-            BOLDtoT1 = glob(op.join(deriv_dir, substr, sesstr,'anat', 
-                            boldToMni_suf))[0]
-            sub_ses_anat_T1toMNI = glob(op.join(deriv_dir, substr, sesstr, 
-                                        'anat',t1ToMni_suf))
-            sub_anat_T1toMNI = glob(op.join(deriv_dir, substr,'anat',
-                                    t1ToMni_suf))
-
-            if not sub_ses_anat_T1toMNI:
-                T1toMNI = sub_anat_T1toMNI[0]
+            
+            if args.anat_session is not None:
+                anatsesstr = "ses-" + args.anat_session
+                sub_ses_anat_T1toMNI = glob(op.join(deriv_dir, substr, anatsesstr, 
+                                            'anat',t1ToMni_suf))
             else:
-                T1toMNI = sub_ses_anat_T1toMNI[0]
+                sub_ses_anat_T1toMNI = glob(op.join(deriv_dir, substr, sesstr, 
+                                            'anat',t1ToMni_suf))
+
+            T1toMNI = sub_ses_anat_T1toMNI[0]
+            
 
             ref_file  = glob(op.join(deriv_dir, substr, sesstr,'func',
                              boldref_suf))[0]
@@ -109,7 +121,7 @@ def nbt_tedana():
 
             at = ApplyTransforms()  
           
-            at.inputs.transforms = [T1toMNI,BOLDtoT1] 
+            at.inputs.transforms = [T1toMNI,BoldToT1[0]] 
             at.inputs.reference_image = ref_file
             at.inputs.dimension = 3
             at.inputs.input_image_type = 3
@@ -118,9 +130,9 @@ def nbt_tedana():
             at.inputs.float = True
             
             at.inputs.input_image = op.join(tedana_arg['out-dir'], 
-                                            'desc-optcom_bold.nii.gz')
+                                            'desc-optcomDenoised_bold.nii.gz')
             at.inputs.output_image = op.join(tedana_arg['out-dir'],
-                                             'desc-optcom_bold_mni.nii.gz')
+                                             'desc-optcomDenoised_bold_mni.nii.gz')
 
             # Add ANTs to PATH
             os.environ['PATH'] += os.path.pathsep + '/usr/local/bin/ANTs/bin/'
