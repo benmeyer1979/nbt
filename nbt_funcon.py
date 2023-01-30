@@ -10,6 +10,7 @@ from nilearn.input_data import NiftiLabelsMasker
 import numpy as np
 import os
 import pandas as pd
+import pdb
 
 
 def read_args_funcon():
@@ -57,7 +58,6 @@ def check_hcp_epipathlist(basedir, task_label, subs):
             [epiPathList_red.append(s) for s in epiPathList if sub in s]
         return epiPathList_red
 
-
 def read_hcp_epi_masks(rootdir, task_label, subs):
     filepat = rootdir + "/**/rfMRI_" + task_label + "/" + "brainmask_fs.2.nii.gz"
     epiPathList = glob.glob(filepat, recursive=True)
@@ -69,6 +69,32 @@ def read_hcp_epi_masks(rootdir, task_label, subs):
             [epiPathList_red.append(s) for s in epiPathList if sub in s]
         return epiPathList_red
 
+##############################################################################
+
+def check_bids_epipathlist(basedir, task_label, subs):
+    filepat = basedir + "/**/*" + task_label + "*MNI152NLin2009cAsym_desc-preproc_bold.nii.gz"
+    epiPathList = glob.glob(filepat, recursive=True)
+    if not subs:
+        return epiPathList
+    else:
+        epiPathList_red = []
+        for sub in subs:
+            [epiPathList_red.append(s) for s in epiPathList if sub in s]
+        return epiPathList_red
+
+
+def read_bids_epi_masks(rootdir, task_label, subs):
+    filepat = rootdir + "/**/*" + task_label + "*brain_mask.nii.gz"
+    epiPathList = glob.glob(filepat, recursive=True)
+    if not subs:
+        return epiPathList
+    else:
+        epiPathList_red = []
+        for sub in subs:
+            [epiPathList_red.append(s) for s in epiPathList if sub in s]
+        return epiPathList_red
+
+##############################################################################
 
 def check_epi_masks(rootdir, task_label, filepat, subs):
     filepat = rootdir + "/**/*" + task_label + filepat
@@ -108,7 +134,7 @@ def generate_epi_masks(epipathlist):
 def read_atlas(atlasfile):
     atlasLabels = []
     atlasIDs = []
-    atlasLabelsFile = atlasfile.replace('.nii', '_labels.nii')
+    atlasLabelsFile = atlasfile.replace('.nii', '_labels.txt')
     with open(atlasLabelsFile) as csv_file:
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
@@ -149,6 +175,41 @@ def read_hcp_confounds(epidir, args):
     return confounds_df
 
 
+def read_fmriprep_confounds(epidir,args):
+
+
+    filepat = epidir + "/*" + args.task + "*confounds_timeseries.tsv"
+    confound_file = glob.glob(os.path.join(epidir, filepat))
+
+    confound_vars = []
+
+    if  args.remove_motion == 'y':
+        confound_vars.extend(['rot_x','rot_y','rot_z','rot_x_derivative1','rot_y_derivative1','rot_z_derivative1',
+        'trans_x','trans_y','trans_z','trans_x_derivative1','trans_y_derivative1','trans_z_derivative1'])
+    if args.remove_csf == 'y':
+        confound_vars.extend(['csf'])    
+    if args.remove_white_matter == 'y':
+        confound_vars.extend(['white_matter']) 
+
+    confounds_df = pd.read_csv(confound_file[0], delimiter='\t')
+    confounds_df = confounds_df[confound_vars]
+    confounds_df = confounds_df.fillna(0)
+   
+    return confounds_df
+
+
+def check_bids_epipathlist(basedir, task_label, subs):
+    filepat = basedir + "/**/*" + task_label + "*MNI152NLin2009cAsym_desc-preproc_bold.nii.gz"
+    epiPathList = glob.glob(filepat, recursive=True)
+    if not subs:
+        return epiPathList
+    else:
+        epiPathList_red = []
+        for sub in subs:
+            [epiPathList_red.append(s) for s in epiPathList if sub in s]
+        return epiPathList_red
+
+
 def nbt_funcon():
     args = read_args_funcon()
     if args.task is None:
@@ -160,15 +221,23 @@ def nbt_funcon():
     if args.dataset == 'hcp':
         epiPathList = check_hcp_epipathlist(args.base, args.task, args.subjects)
         epiPathList_mask = read_hcp_epi_masks(args.base, args.task, args.subjects)
+    elif args.dataset == 'bids':
+        epiPathList = check_bids_epipathlist(args.base, args.task, args.subjects)
+        epiPathList_mask = read_bids_epi_masks(args.base, args.task, args.subjects)
 
-    epi_group_mask = generate_group_epi_mask(epiPathList_mask)
+    epi_group_mask = generate_group_epi_mask(epiPathList)
     atlasLabels, atlasIDs = read_atlas(args.atlas)
 
     for epiPath in epiPathList:
         # Directory of epi image
         epiDir = os.path.split(epiPath)[-2]
         # get confounds dataframe
-        confounds_df = read_hcp_confounds(epiDir, args)
+        if args.dataset == 'hcp':
+            confounds_df = read_hcp_confounds(epiDir, args)
+            # get confounds dataframe
+        elif args.dataset == 'bids':
+            confounds_df = read_fmriprep_confounds(epiDir,args)
+
         # get brain timeseries
         brain_timeseries, masker = extract_brain_timeseries(epiPath, epi_group_mask, args.low_pass, args.high_pass,
                                                             args.time_rep, confounds_df, args.smooth_fwhm)
@@ -182,12 +251,13 @@ def nbt_funcon():
 
         for i in seeds:
             # Calculate FC (Pearson's R)
-            fc_data = (np.dot(brain_timeseries.T, seed_timeseries[:, i]) / seed_timeseries.shape[0])
+            fc_data = (np.dot(brain_timeseries.T, atlas_timeseries[:, i-1]) / atlas_timeseries.shape[0])
             # Convert FC data to image
             fc_map = masker.inverse_transform(fc_data.T)
             # Save FC map
             suffix_fc_outfile = '_fc_seed_' + str(atlasIDs[i]) + '.nii.gz'
-            outfileFC = epiPath.replace('nii.gz', suffix_fc_outfile)
+            outfileFC = epiPath.replace('.nii.gz', suffix_fc_outfile)
+            
             fc_map.to_filename(outfileFC)
             # Calculate Fisher's z-transform
             zfc_data = np.arctanh(fc_data)
