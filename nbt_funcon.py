@@ -56,7 +56,7 @@ def read_args_funcon():
 
 def check_hcp_epipathlist(basedir, task_label, subs, ped):
     filepat = basedir + "/**/*" + task_label + "_" + ped + "*clean.nii.gz"
-    epiPathList = glob.glob(filepat, recursive=True)
+    epiPathList = sorted(glob.glob(filepat, recursive=True))
     if not subs:
         return epiPathList
     else:
@@ -68,7 +68,7 @@ def check_hcp_epipathlist(basedir, task_label, subs, ped):
 def read_hcp_epi_masks(rootdir, task_label, subs, ped):
     filepat = rootdir + "/**/rfMRI_" + task_label + '_' + ped + "/" + \
               "brainmask_fs.2.nii.gz"
-    epiPathList = glob.glob(filepat, recursive=True)
+    epiPathList = sorted(glob.glob(filepat, recursive=True))
     if not subs:
         return epiPathList
     else:
@@ -82,7 +82,7 @@ def read_hcp_epi_masks(rootdir, task_label, subs, ped):
 def check_bids_epipathlist(basedir, task_label, subs):
     filepat = basedir + "/**/*" + task_label + \
               "*MNI152NLin2009cAsym_desc-preproc_bold.nii.gz"
-    epiPathList = glob.glob(filepat, recursive=True)
+    epiPathList = sorted(glob.glob(filepat, recursive=True))
     if not subs:
         return epiPathList
     else:
@@ -94,7 +94,7 @@ def check_bids_epipathlist(basedir, task_label, subs):
 
 def read_bids_epi_masks(rootdir, task_label, subs):
     filepat = rootdir + "/**/*" + task_label + "*brain_mask.nii.gz"
-    epiPathList = glob.glob(filepat, recursive=True)
+    epiPathList = sorted(glob.glob(filepat, recursive=True))
     if not subs:
         return epiPathList
     else:
@@ -107,7 +107,7 @@ def read_bids_epi_masks(rootdir, task_label, subs):
 
 def check_epi_masks(rootdir, task_label, filepat, subs):
     filepat = rootdir + "/**/*" + task_label + filepat
-    masklist = glob.glob(filepat, recursive=True)
+    masklist = sorted(glob.glob(filepat, recursive=True))
     if not subs:
         return masklist
     else:
@@ -253,10 +253,10 @@ def parallel_fc_bids(arglist_item):
     [seeds.append(atlasIDs.index(i)) for i in args.seeds]
     seed_timeseries = np.take(atlas_timeseries, indices=seeds, axis=1)
 
-    for i in seeds:
-        print("\tCalculating FC for seed " + str(i) + ' in ' + epiPath)
+    for j in seeds:
+        print("\tCalculating FC for seed " + str(j) + ' in ' + epiPath)
         # Calculate FC (Pearson's R)
-        fc_data = (np.dot(brain_timeseries.T, atlas_timeseries[:, i-1]) / atlas_timeseries.shape[0])
+        fc_data = (np.dot(brain_timeseries.T, atlas_timeseries[:, j-1]) / atlas_timeseries.shape[0])
         # Convert FC data to image
         fc_map = masker.inverse_transform(fc_data.T)
         # Calculate Fisher's z-transform
@@ -264,7 +264,6 @@ def parallel_fc_bids(arglist_item):
         # Convert z-FC data to image
         zfc_map = masker.inverse_transform(zfc_data.T)
 
-        # pdb.set_trace()
         # Save z-FC map
 
         if args.dataset == 'hcp':
@@ -277,11 +276,11 @@ def parallel_fc_bids(arglist_item):
             sysstr = "mkdir -p " + outPath
             os.system(sysstr)
             #save fc map to file
-            suffix_fc_outfile = '_fc_seed_' + str(atlasIDs[i]) + '.nii.gz'
+            suffix_fc_outfile = '_fc_seed_' + str(atlasIDs[j]) + '.nii.gz'
             outfileFC = outFile.replace('.nii.gz', suffix_fc_outfile)
             fc_map.to_filename(outfileFC)
             #save z-fc map to file
-            suffix_zfc_outfile = '_zfc_seed_' + str(atlasIDs[i]) + '.nii.gz'
+            suffix_zfc_outfile = '_zfc_seed_' + str(atlasID[j]) + '.nii.gz'
             outfileZFC = outFile.replace('.nii.gz', suffix_zfc_outfile)
             zfc_map.to_filename(outfileZFC)
         elif args.dataset == 'bids':
@@ -289,84 +288,111 @@ def parallel_fc_bids(arglist_item):
 
 
 def parallel_fc_hcp(arglist_item):
+    try:
+        epiPath_LR         = arglist_item['epiPath'][0]
+        epiPath_RL         = arglist_item['epiPath'][1]
+        args               = arglist_item['args']
+        epi_group_mask     = arglist_item['epi_group_mask']
+        atlasIDs           = arglist_item['atlasIDs']
 
-    epiPath_LR         = arglist_item['epiPath'][0]
-    epiPath_RL         = arglist_item['epiPath'][1]
-    args               = arglist_item['args']
-    epi_group_mask     = arglist_item['epi_group_mask']
-    atlasIDs           = arglist_item['atlasIDs']
+        # get seed timeseries
+        seeds = []
+        [seeds.append(atlasIDs.index(i)) for i in args.seeds]
+        outfileFC=[]
+        outfileZFC=[]
 
-    # Directory of epi image
-    epiDir = os.path.split(epiPath_LR)[-2]
-    # get confounds dataframe
-    if args.dataset == 'hcp':
-        confounds_df = None
+        # Directory of epi image
+        epiDir_LR = os.path.split(epiPath_LR)[-2]
+        epiDir_RL = os.path.split(epiPath_RL)[-2]
+
+        pdb.set_trace()
+
+        #check wether participants are the same for LR/RL
+        epiDir_RL = epiDir_RL.replace('_RL','_LR')
+        if not epiDir_LR == epiDir_RL:
+            with open("errorlog.txt","a") as errorlog:
+                errorlog.write('LR and RL are not from the same subject ' + epiPath_LR + '!')
+                print('LR and RL are not from the same subject: ' + epiPath_LR + '!!')
+            return None
+        else:
+            print('LR/RL check passed!')            
+
+        for j in seeds:
+            if args.dataset == 'hcp':
+                #prepare output filenames
+                outPath = copy.copy(epiPath_LR)
+                outPath = outPath.replace("_LR","_LR_RL")
+                outPath = outPath.replace("HCP_1200","FC")
+                outPath = outPath.replace("MNINonLinear/Results/","")
+                outFile = copy.copy(outPath)
+                outPath = re.sub('[a-zA-Z0-9_-]*.nii.gz','',outPath)
+                sysstr = "mkdir -p " + outPath
+                os.system(sysstr)
+                suffix_fc_outfile = '_fc_seed_' + str(atlasIDs[j]) + '.nii.gz'
+                outfileFC.append(outFile.replace('.nii.gz', suffix_fc_outfile))
+                suffix_zfc_outfile = '_zfc_seed_' + str(atlasIDs[j]) + '.nii.gz'
+                outfileZFC.append(outFile.replace('.nii.gz', suffix_zfc_outfile))
+
+                if os.path.exists(outfileZFC[-1]):
+                    print("File " + outfileZFC[-1] + " already exists!")
+                    return None
+
         # get confounds dataframe
-    elif args.dataset == 'bids':
-        confounds_df = read_fmriprep_confounds(epiDir,args)
-
-    # get brain timeseries
-    brain_timeseries_LR, masker_LR = \
-    extract_brain_timeseries(epiPath_LR, epi_group_mask, 
-                             args.low_pass, args.high_pass,
-                             args.time_rep, confounds_df, args.smooth_fwhm)
-    # get atlas timeseries
-    atlas_timeseries_LR = \
-    extract_atlas_timeseries(epiPath_RL, args.atlas, args.low_pass, 
-                             args.high_pass, args.time_rep, confounds_df)
-    # get brain timeseries
-    brain_timeseries_RL, masker_RL = \
-    extract_brain_timeseries(epiPath_RL, epi_group_mask, 
-                             args.low_pass, args.high_pass,
-                             args.time_rep, confounds_df, args.smooth_fwhm)
-    # get atlas timeseries
-    atlas_timeseries_RL = \
-    extract_atlas_timeseries(epiPath_RL, args.atlas, args.low_pass, 
-                             args.high_pass,args.time_rep, confounds_df)
-   
-    brain_timeseries = np.concatenate((brain_timeseries_LR, brain_timeseries_RL),axis=0)
-    
-    atlas_timeseries = np.concatenate((atlas_timeseries_LR, atlas_timeseries_RL),axis=0)
-
-    # get seed timeseries
-    seeds = []
-    [seeds.append(atlasIDs.index(i)) for i in args.seeds]
-    seed_timeseries = np.take(atlas_timeseries, indices=seeds, axis=1)
-
-    for i in seeds:
-        print("\tCalculating FC for seed " + str(atlasIDs[i])  + ' in ' + epiPath_LR + epiPath_RL)
-        # Calculate FC (Pearson's R)
-        fc_data = (np.dot(brain_timeseries.T, atlas_timeseries[:, i]) / atlas_timeseries.shape[0])
-        # Convert FC data to image
-        fc_map = masker_LR.inverse_transform(fc_data.T)
-        # Calculate Fisher's z-transform
-        zfc_data = np.arctanh(fc_data)
-        # Convert z-FC data to image
-        zfc_map = masker_LR.inverse_transform(zfc_data.T)
-
-        # pdb.set_trace()
-        # Save z-FC map
-
         if args.dataset == 'hcp':
-            #make directory
-            outPath = copy.copy(epiPath_LR)
-            outPath = outPath.replace("_LR","_LR_RL")
-            outPath = outPath.replace("HCP_1200","FC")
-            outPath = outPath.replace("MNINonLinear/Results/","")
-            outFile = copy.copy(outPath)
-            outPath = re.sub('[a-zA-Z0-9_-]*.nii.gz','',outPath)
-            sysstr = "mkdir -p " + outPath
-            os.system(sysstr)
-            #save fc map to file
-            suffix_fc_outfile = '_fc_seed_' + str(atlasIDs[i]) + '.nii.gz'
-            outfileFC = outFile.replace('.nii.gz', suffix_fc_outfile)
-            fc_map.to_filename(outfileFC)
-            #save z-fc map to file
-            suffix_zfc_outfile = '_zfc_seed_' + str(atlasIDs[i]) + '.nii.gz'
-            outfileZFC = outFile.replace('.nii.gz', suffix_zfc_outfile)
-            zfc_map.to_filename(outfileZFC)
+            confounds_df = None
+            # get confounds dataframe
         elif args.dataset == 'bids':
-            sys.exit('FC output calculated from bids data still under development.')
+            confounds_df = read_fmriprep_confounds(epiDir,args)
+
+        # get brain timeseries
+        brain_timeseries_LR, masker_LR = \
+        extract_brain_timeseries(epiPath_LR, epi_group_mask, 
+                                args.low_pass, args.high_pass,
+                                args.time_rep, confounds_df, args.smooth_fwhm)
+        # get atlas timeseries
+        atlas_timeseries_LR = \
+        extract_atlas_timeseries(epiPath_LR, args.atlas, args.low_pass, 
+                                args.high_pass, args.time_rep, confounds_df)
+        # get brain timeseries
+        brain_timeseries_RL, masker_RL = \
+        extract_brain_timeseries(epiPath_RL, epi_group_mask, 
+                                args.low_pass, args.high_pass,
+                                args.time_rep, confounds_df, args.smooth_fwhm)
+        # get atlas timeseries
+        atlas_timeseries_RL = \
+        extract_atlas_timeseries(epiPath_RL, args.atlas, args.low_pass, 
+                                args.high_pass,args.time_rep, confounds_df)
+   
+        brain_timeseries = np.concatenate((brain_timeseries_LR, brain_timeseries_RL),axis=0)
+    
+        atlas_timeseries = np.concatenate((atlas_timeseries_LR, atlas_timeseries_RL),axis=0)
+        
+        seed_timeseries = np.take(atlas_timeseries, indices=seeds, axis=1)
+            
+        for i in range(len(seeds)):
+            print("\tCalculating FC for seed " + str(atlasIDs[seeds[i]])  + ' in ' + epiPath_LR + epiPath_RL)
+            # Calculate FC (Pearson's R)
+            fc_data = (np.dot(brain_timeseries.T, atlas_timeseries[:, seeds[i]]) / atlas_timeseries.shape[0])
+            # Convert FC data to image
+            fc_map = masker_LR.inverse_transform(fc_data.T)
+            # Calculate Fisher's z-transform
+            zfc_data = np.arctanh(fc_data)
+            # Convert z-FC data to image
+            zfc_map = masker_LR.inverse_transform(zfc_data.T)
+
+            #save files
+            if args.dataset == 'hcp':
+                fc_map.to_filename(outfileFC[i])
+                zfc_map.to_filename(outfileZFC[i])
+            elif args.dataset == 'bids':
+                sys.exit('FC output calculated from bids data still under development.')
+
+    except:
+        with open("errorlog.txt","a") as errorlog:
+             errorlog.write('Problem with ' + epiPath_LR + '!')
+
+        print('Problem with ' + epiPath_LR + '!!')
+        return None
 
 
 def nbt_funcon():
@@ -384,7 +410,6 @@ def nbt_funcon():
         epiPathList_LR = check_hcp_epipathlist(args.base, args.task, args.subjects,'LR')
         epiPathList_RL = check_hcp_epipathlist(args.base, args.task, args.subjects,'RL')
         epiPathList = map(list,zip(epiPathList_LR,epiPathList_RL))
-        
         epiPathList_mask_RL = read_hcp_epi_masks(args.base, args.task, args.subjects,'RL')
         epiPathList_mask_LR = read_hcp_epi_masks(args.base, args.task, args.subjects,'LR')
 
@@ -426,7 +451,6 @@ def nbt_funcon():
                               'epi_group_mask':epi_group_mask,
                               'atlasIDs':atlasIDs})  
                                for epiPath in epiPathList]
-
             [parallel_fc_hcp(i) for i in arg_list]
         else:
             [arg_list.append({'epiPath':epiPath,'args':args,'epi_group_mask':epi_group_mask,'atlasIDs':atlasIDs})  for epiPath in epiPathList]
