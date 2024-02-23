@@ -7,10 +7,9 @@ nbt (nic bids tools) contains a collection of python scripts facilitating BIDS-c
 1. All DICOM files must be organized in subject and session subdirectories [e.g. raw/sub1/session1, raw/sub1/session2, raw/sub2/...]
 2. A json-formatted template file defining the data structure of the raw MRI data must be created. Examples can be found in GLC_template.json
 
-Each json file has a subject object with the following key-value pairs:
-    | "subject": example ID
-    | "sessions": array of objects defining the session directory ("sessionDir"), session ID ("sessionID") and a "scans" array. Each object of scans defines a particular MRI sequence by BIDS key-value pairs:
+The json file must have a subject object with the key-value pairs "subject" (example ID), "sessions": array of objects each defining the session directory ("sessionDir"), session ID ("sessionID") and an array of "scans" array. Each "scans" object defines a particular MRI sequence by BIDS key-value pairs:
 
+|
     acq:            BIDS acquisition (NIC descriptors like mb3me4 for multiband-factor 3 and 4 echos can be used here)
     data_type:      BIDS data type
     dir:            BIDS phase encoding direction
