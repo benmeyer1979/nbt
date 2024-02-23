@@ -11,14 +11,14 @@ Each json file has a subject object with the following key-value pairs:
     | "subject": example ID
     | "sessions": array of objects defining the session directory ("sessionDir"), session ID ("sessionID") and a "scans" array. Each object of scans defines a particular MRI sequence by BIDS key-value pairs:
 
-    acq:       BIDS acquisition (NIC descriptors like mb3me4 for multiband-factor 3 and 4 echos can be used here)
-    data_type: BIDS data type
-    dir:       BIDS phase encoding direction
-    echos:     number of echos
-    intendedfor: can be either a single task name or "all" 
-    mod:       BIDS modality
-    run:       BIDS run
-    task:      BIDS task name
+    acq:            BIDS acquisition (NIC descriptors like mb3me4 for multiband-factor 3 and 4 echos can be used here)
+    data_type:      BIDS data type
+    dir:            BIDS phase encoding direction
+    echos:          number of echos
+    intendedfor:    can be either a single task name or "all" 
+    mod:            BIDS modality
+    run:            BIDS run
+    task:           BIDS task name
 
 Example files can be found in XXX and XXX
 
