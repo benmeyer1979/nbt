@@ -9,7 +9,21 @@ nbt (nic bids tools) contains a collection of python scripts facilitating BIDS-c
 
 Each json file has a subject object with the following key-value pairs:
     | "subject": example ID
-    | "sessions": array of objects each defining the session directory ("sessionDir"), the session ID ("sessionID"). Each session object furthermore defines a "scans" array. Each element of scans defines a particular MRI sequence by using BIDS-compliant key-value pairs.
+    | "sessions": array of objects defining the session directory ("sessionDir"), session ID ("sessionID") and a "scans" array. Each object of scans defines a particular MRI sequence by BIDS key-value pairs:
+
+    acq:       BIDS acquisition (NIC descriptors like mb3me4 for multiband-factor 3 and 4 echos can be used here)
+    data_type: BIDS data type
+    dir:       BIDS phase encoding direction
+    echos:     number of echos
+    intendedfor: can be either a single task name or "all" 
+    mod:       BIDS modality
+    run:       BIDS run
+    task:      BIDS task name
+
+Example files can be found in XXX and XXX
+
+
+
 
 TODO (Author's note): 
 - change study_json to data_json in nbt_define.py
