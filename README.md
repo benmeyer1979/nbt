@@ -2,6 +2,15 @@
 
 nbt (nic bids tools) contains a collection of python scripts facilitating BIDS-conversion, fMRIprep-based preprocessing and analyses of BIDS-compliant datasets.
 
+# How to turn raw MRI data into a BIDS dataset  
+
+1. All DICOM files must be organized in subject and session subdirectories [e.g. raw/sub1/session1, raw/sub1/session2, raw/sub2/...]
+2. A json-formatted template file defining the data structure of the raw MRI data must be created. Examples can be found in GLC_template.json
+
+Each json file has a subject object with the following key-value pairs:
+    | "subject": example ID
+    | "sessions": array of objects each defining the session directory ("sessionDir"), the session ID ("sessionID"). Each session object furthermore defines a "scans" array. Each element of scans defines a particular MRI sequence by using BIDS-compliant key-value pairs.
+
 TODO (Author's note): 
 - change study_json to data_json in nbt_define.py
 - rename nbt_define.py to nbt_assign.py
