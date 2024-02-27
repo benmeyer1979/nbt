@@ -2,12 +2,12 @@
 
 nbt (nic bids tools) contains a collection of python scripts facilitating BIDS-conversion, fMRIprep-based preprocessing and analyses of BIDS-compliant datasets.
 
-# How to turn raw MRI data into a BIDS dataset  
+# How to convert raw MRI data into a BIDS dataset  
 
 1. All DICOM files must be organized in subject and session subdirectories [e.g. raw/sub1/session1, raw/sub1/session2, raw/sub2/...]
 2. A json-formatted template file defining the data structure of the raw MRI data must be created. Examples can be found in GLC_template.json
 
-The json file must have a subject object with the key-value pairs "subject" (example ID), "sessions": array of objects each defining the session directory ("sessionDir"), session ID ("sessionID") and an array of "scans" array. Each "scans" object defines a particular MRI sequence by BIDS key-value pairs:
+The template must contain a subject object with keys "subjectID" (subject ID) and "sessions" (array of objects each defining the session directory ("sessionDir"), session ID ("sessionID") and a "scans" array). Each "scans" object defines a particular MRI sequence by BIDS key-value pairs:
 
 |key|value|
 |---|-----|
@@ -20,19 +20,9 @@ The json file must have a subject object with the key-value pairs "subject" (exa
 |run|BIDS run|
 |task|BIDS task name|
 
-Example files can be found in XXX and XXX
+Example files can be found in XXX and XXX. 
 
-
-
-
-TODO (Author's note): 
-- change study_json to data_json in nbt_define.py
-- rename nbt_define.py to nbt_assign.py
-- nbt_convert.py: -help says that DICOMs are returned and stored in out. Not true.
-- nbt_convert.py: adjust arg names in -help to match README.md
-- nbt_convert.py: check fieldmap handling [single, all, none]. What is fmriprep doing with multiple fieldmaps in a single and multiple sessions?
-- nbt_tedana.py: adjust arg names in -help to match README.md
-- tedana.py: finish README
+3. nbt_define.py must be called to generate the dataset structure for the entire set of raw DICOM files.
 
 ## nbt_define.py
 
