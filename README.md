@@ -22,21 +22,19 @@ The template must contain a subject object with keys "subjectID" (subject ID) an
 
 Example files can be found in XXX and XXX. 
 
-3. nbt_define.py must be called to generate the dataset structure for the entire set of raw DICOM files.
-
-## nbt_define.py
+3. Run nbt_define.py to generate the dataset structure for the entire set of raw DICOM files.
 
 **Usage: nbt_define.py [OPTIONAL ARGUMENTS] template_json  raw_mri data_json**
 
 nbt_define.py assigns BIDS key-value pairs to each DICOM image in **raw_mri** according to a json-formatted template file (**template_json**). nbt_define.py returns a json file (**data_json**) containing BIDS key-value pairs for all DICOM images with matches in **template_json**. Example template files can be found here. **raw_mri** must be organized in subject and session subdirectories [e.g. raw/sub1/session1, raw/sub1/session2, raw/sub2/...]. nbt_define.py requires Python 3.XX plus some further packages (see imports in nbt_define.py). For more information type ./nbt_define.py -h.
 
-## nbt_convert.py
+4. Run nbt_convert.py to convert dicom to niftis and to create a BIDS-compliant dataset  
 
 **Usage: nbt_convert.py [OPTIONAL ARGUMENTS] [-lic LICENSE] [-fm {single,all,none}] data_json BIDS_outdir**
 
-nbt_convert performs BIDS-compliant dicom-to-nifti conversion. Nifti files are named according to a json-formatted study template listing all scans and corresponding BIDS key-value pairs (**data_json**). Imortant: It must be defined whether fieldmaps will be used for single scans [single], for all scans [all] or if fieldmaps will not be used/are not applicable [none]. Furthermore a Freesurfer-license file should be passed using the -lic option as it is required by fMRIprep. nbt_convert.py requires Python 3.XX and some additional packages (see imports in nbt_convert.py). For more information type ./nbt_convert.py -h.
+nbt_convert performs BIDS-compliant dicom-to-nifti conversion. Nifti files are named according to the output file of nbt_define.py (**data_json**). Important: It must be defined whether fieldmaps will be used for single scans [single], for all scans [all] or if fieldmaps will not be used [none]. Furthermore a Freesurfer-license file should be passed using the -lic option as it is required by fMRIprep. nbt_convert.py requires Python 3.XX and some additional packages (see imports in nbt_convert.py). For more information type ./nbt_convert.py -h.
 
-## nbt_tedana.py
+5. Run fMRIprep
 
 **Usage: nbt_tedana.py [OPTIONAL ARGUMENTS] BIDSbase fMRIprepID**
 
