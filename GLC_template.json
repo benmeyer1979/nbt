@@ -1,0 +1,62 @@
+{
+    "sessions": [
+        {
+            "scan": [
+                {
+                    "data_type": "anat",
+                    "mod": "T1w",
+                    "scan_dir": "t1_mpr_ns_sag_p2_iso08_Series"
+                },
+                {
+                    "acq": "darkfluid1",
+                    "data_type": "anat",
+                    "mod": "FLAIR",
+                    "scan_dir": "t2_space_dark-fluid_sag_c4_TR_7000_Series"
+                },
+                {
+                    "acq": "darkfluid2",
+                    "data_type": "anat",
+                    "mod": "FLAIR",
+                    "scan_dir": "t2_space_dark-fluid_V2_sag_c4_IR_9000_Series"
+                },
+                {
+                    "acq": "mb3me4",
+                    "data_type": "func",
+                    "echos": 4,
+                    "mod": "bold",
+                    "scan_dir": "fMRI_me4mb3_51slices_TR1435_T1_R1_Series",
+                    "task": "rest1"
+                },
+                {
+                    "acq": "mb3me4",
+                    "data_type": "func",
+                    "echos": 4,
+                    "mod": "sbref",
+                    "scan_dir": "fMRI_me4mb3_51slices_TR1435_T1_R1_SBRef_Series",
+                    "task": "rest1"
+                },
+                {
+                    "acq": "spinecho",
+                    "data_type": "fmap",
+                    "dir": "AP",
+                    "intendedfor": "rest1",
+                    "mod": "epi",
+                    "run": 1,
+                    "scan_dir": "SpinEchoFieldMap_AP_51slices_T1_R1_Series"
+                },
+                {
+                    "acq": "spinecho",
+                    "data_type": "fmap",
+                    "dir": "PA",
+                    "intendedfor": "rest1",
+                    "mod": "epi",
+                    "run": 1,
+                    "scan_dir": "SpinEchoFieldMap_PA_51slices_T1_R1_Series"
+                }
+            ],
+            "sessionDir": "/mnt/nicshare/GPC/data/raw/GLC_Studie/*/session1",
+            "sessionID": "session1"
+        }
+    ],
+    "subjectID": "001"
+}
