@@ -4,10 +4,8 @@ nbt (nic bids tools) contains a collection of python scripts facilitating BIDS-c
 
 # How to convert raw MRI data into a BIDS dataset  
 
-1. All DICOM files must be organized in subject and session subdirectories [e.g. raw/sub1/session1, raw/sub1/session2, raw/sub2/...]
-2. A json-formatted template file defining the data structure of the raw MRI data must be created. Examples can be found in GLC_template.json
-
-The template must contain a subject object with keys "subjectID" (subject ID) and "sessions" (array of objects each defining the session directory ("sessionDir"), session ID ("sessionID") and a "scans" array). Each "scans" object defines a particular MRI sequence by BIDS key-value pairs:
+1. All nbt tools and fmriprep can only be started on Linux systems. If you do not have an account on the Linux VM (or the Linux server) please ask the Linux admins to get an account and a project directory on the nicshare drive. All DICOM files must be copied to your nicshare project directory and must be organized in subject and session subdirectories [e.g. raw/sub1/session1, raw/sub1/session2, raw/sub2/...]
+2. A json-formatted template file defining the data structure of the raw MRI data must be created. The template must contain a subject object with keys "subjectID" (subject ID) and "sessions" (array of objects each defining the session directory ("sessionDir"), session ID ("sessionID") and a "scans" array). Each "scans" object defines a particular MRI sequence by BIDS key-value pairs:
 
 |key|value|
 |---|-----|
@@ -20,7 +18,7 @@ The template must contain a subject object with keys "subjectID" (subject ID) an
 |run|BIDS run|
 |task|BIDS task name|
 
-Example files can be found in XXX and XXX. 
+For example template files see XXX and XXX.
 
 3. Run nbt_define.py to generate the dataset structure for the entire set of raw DICOM files.
 
