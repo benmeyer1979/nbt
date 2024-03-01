@@ -1,0 +1,146 @@
+{
+    "sessions": [
+        {
+            "scan": [
+                {
+                    "data_type": "anat",
+                    "mod": "T1w",
+                    "scan_dir": "t1_mpr_ns_sag_p2_iso08"
+                },
+                {
+                    "data_type": "anat",
+                    "mod": "T2w",
+                    "scan_dir": "t2_tse_tra_448_p2_3mm"
+                },
+                {
+                    "acq": "mbse",
+                    "data_type": "func",
+                    "mod": "bold",
+                    "scan_dir": "fmri_Tag1_mb4_TR_1000_fam_Series",
+                    "task": "fearfam"
+                },
+                {
+                    "acq": "mbse",
+                    "data_type": "func",
+                    "mod": "bold",
+                    "scan_dir": "fmri_Tag1_mb4_TR_1000_Series",
+                    "task": "fearcond"
+                },
+                {
+                    "acq": "mbse",
+                    "data_type": "func",
+                    "mod": "bold",
+                    "scan_dir": "resting1_mb4_TR_1000_Series",
+                    "task": "rest1"
+                },
+                {
+                    "acq": "mbse",
+                    "data_type": "func",
+                    "mod": "bold",
+                    "scan_dir": "resting2_mb4_TR_1000_Series",
+                    "task": "rest2"
+                },
+                {
+                    "acq": "gremag",
+                    "data_type": "fmap",
+                    "intendedfor": "all",
+                    "scan_dir": "gre_field_mapping_Series"
+                },
+                {
+                    "acq": "grephase",
+                    "data_type": "fmap",
+                    "intendedfor": "all",
+                    "scan_dir": "gre_field_mapping_Series"
+                }
+            ],
+            "sessionDir": "/mnt/Daten/groups/RepDopa/data/raw/*/Day1",
+            "sessionID": "Day1"
+        },
+        {
+            "scan": [
+                {
+                    "acq": "mbse",
+                    "data_type": "func",
+                    "mod": "bold",
+                    "scan_dir": "fmri_Tag2_mb4_TR_1000_Series",
+                    "task": "fearext"
+                },
+                {
+                    "acq": "mbse",
+                    "data_type": "func",
+                    "mod": "bold",
+                    "scan_dir": "resting1_mb4_TR_1000_Series",
+                    "task": "rest1"
+                },
+                {
+                    "acq": "mbse",
+                    "data_type": "func",
+                    "mod": "bold",
+                    "scan_dir": "resting2_mb4_TR_1000_Series",
+                    "task": "rest2"
+                },
+                {
+                    "acq": "mbse",
+                    "data_type": "func",
+                    "mod": "bold",
+                    "scan_dir": "resting3_mb4_TR_1000_Series",
+                    "task": "rest3"
+                },
+                {
+                    "acq": "mbse",
+                    "data_type": "func",
+                    "mod": "bold",
+                    "scan_dir": "resting4_mb4_TR_1000_Series",
+                    "task": "rest4"
+                },
+                {
+                    "acq": "gremag",
+                    "data_type": "fmap",
+                    "intendedfor": "all",
+                    "scan_dir": "gre_field_mapping_Series"
+                },
+                {
+                    "acq": "grephase",
+                    "data_type": "fmap",
+                    "intendedfor": "all",
+                    "scan_dir": "gre_field_mapping_Series"
+                }
+            ],
+            "sessionDir": "/mnt/Daten/groups/RepDopa/data/raw/*/Day2",
+            "sessionID": "Day2"
+        },
+        {
+            "scan": [
+                {
+                    "acq": "mbse",
+                    "data_type": "func",
+                    "mod": "bold",
+                    "scan_dir": "fmri_Tag3_mb4_TR_1000_Series",
+                    "task": "fearext"
+                },
+                {
+                    "acq": "mbse",
+                    "data_type": "func",
+                    "mod": "bold",
+                    "scan_dir": "resting1_mb4_TR_1000_Series",
+                    "task": "rest1"
+                },
+                {
+                    "acq": "gremag",
+                    "data_type": "fmap",
+                    "intendedfor": "all",
+                    "scan_dir": "gre_field_mapping_Series"
+                },
+                {
+                    "acq": "grephase",
+                    "data_type": "fmap",
+                    "intendedfor": "all",
+                    "scan_dir": "gre_field_mapping_Series"
+                }
+            ],
+            "sessionDir": "/mnt/Daten/groups/RepDopa/data/raw/*/Day3",
+            "sessionID": "Day3"
+        }
+    ],
+    "subjectID": "001"
+}
