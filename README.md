@@ -42,9 +42,9 @@ Unfortuantely, some of the fmriprep applications have problems with the external
 
 **Usage: nbt_tedana.py [OPTIONAL ARGUMENTS] BIDSbase fMRIprepID**
 
-nbt_tedana.py performs tedana multi-echo ICA and optimal combination on partially preprocessed fMRIprep ouput data in **BIDSbase** (path to BIDS root directory). ANTs normalization and FSL masking is then performed to prepare preprocessed fMRI data for analyses in MNI-space. fMRIprep must be performed using the --me-output-echos option. nbt_tedana.py requires Python 3.XX and some additional packages (see imports in nbt_tedana.py). For more information type ./nbt_tedana.py -h.
+nbt_tedana.py performs tedana multi-echo ICA and optimal combination on partially preprocessed fMRIprep output data in **BIDSbase** (path to BIDS root directory containing an fMRIPrep derivatives folder). ANTs normalization and FSL masking is then performed to transform individual fMRI data to MNI-space. fMRIprep must have been performed using the --me-output-echos option. The **fMRIprepID** is a unique(!) BIDS-compliant file identifier including task (required), acq (optional) and run (optional) label, e.g., task-rest_acq-mb3me4_run-1. Labels must be part of the ME-filename. nbt_tedana.py requires Python 3.XX and some additional packages (see imports in nbt_tedana.py). For more information type ./nbt_tedana.py -h.
 
-## additional python code
+## Additional python code
 
 **nbt_prettyjson.py**
 
