@@ -36,18 +36,22 @@ nbt_convert performs BIDS-compliant dicom-to-nifti conversion. Nifti files are n
 
 **Usage: .\local_fmriprep.sh**
 
-Unfortuantely, some of the fmriprep applications have problems with the external nicshare drive. For this reason, data must be first copied to your local home directory. However, as local space is limited to 450 GB and docker containers require large amounts of storage, only single subjects can be preprocessed at a time. **local_fmriprep.sh** can be used to loop over a set of subjects in order to copy each subject's data to your home directory, preprocess it, copy the preprocessed data to nicshare and remove the files from your home directory. 
+Unfortuantely, some of the fmriprep applications have problems with the external nicshare drive. For this reason, data must be first copied to your local home directory. However, as local space is limited to 450 GB and docker containers require large amounts of storage, only single subjects can be copied and preprocessed at a time. **local_fmriprep.sh** can be used to loop over multiple subjects in order to copy each subject's data to your home directory, preprocess it, copy the preprocessed data to nicshare and remove the files from your home directory. 
+
+6. Run ntb_tedana.py (only required for multi echo data)
 
 **Usage: nbt_tedana.py [OPTIONAL ARGUMENTS] BIDSbase fMRIprepID**
 
-nbt_tedana.py performs tedana multi-echo ICA and optimal combination on partially preprocessed fMRIprep ouput data in **BIDSbase** (path to BIDS root directory). ANTs-based normalization and FSL-based masking is performed using nipype to prepare minimally preprocessed MNI-space fMRI data for further analyses. fMRIprep must be performed using the --me-output-echos option. nbt_tedana.py requires Python 3.XX and some additional packages (see imports in nbt_tedana.py). For more information type ./nbt_tedana.py -h.
+nbt_tedana.py performs tedana multi-echo ICA and optimal combination on partially preprocessed fMRIprep ouput data in **BIDSbase** (path to BIDS root directory). ANTs normalization and FSL masking is then performed to prepare preprocessed fMRI data for analyses in MNI-space. fMRIprep must be performed using the --me-output-echos option. nbt_tedana.py requires Python 3.XX and some additional packages (see imports in nbt_tedana.py). For more information type ./nbt_tedana.py -h.
 
-## nbt_prettyjson.py
+## additional python code
+
+**nbt_prettyjson.py**
 
 **Usage: nbt_prettyjson.py ugly_json pretty_json**
 
 nbt_prettyjson.py pretty prints json files (input file: **ugly_json**, output file: **pretty_json**)
 
-## nbt_funcon.py
+**nbt_funcon.py**
 
 Work in progress
