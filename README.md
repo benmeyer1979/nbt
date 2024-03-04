@@ -4,7 +4,7 @@ nbt (nic bids tools) is a customized collection of python scripts facilitating B
 
 # How to convert raw NIC MRI data into a BIDS dataset  
 
-1. nbt tools and fmriprep can only be used on Linux systems. All scripts are preinstalled on the Linux VM and the Linux server. If you do not have an account on the Linux VM (or the Linux server) please ask the Linux admins to get an account and a project directory on the nicshare drive. Raw DICOM files must be copied to your nicshare project directory and must be organized in subject and session subdirectories [e.g. raw/sub1/session1, raw/sub1/session2, raw/sub2/...]
+1. nbt tools and fmriprep can only be used on Linux systems. All nbt scripts are preinstalled on the Linux VM and the Linux server. If you do not have an account on the Linux VM (or the Linux server) please ask the Linux admins to get an account and a project directory on the nicshare drive. Raw DICOM files must be copied to your nicshare project directory and must be organized in subject and session subdirectories [e.g. raw/sub1/session1, raw/sub1/session2, raw/sub2/...]
 2. A json-formatted template file defining the data structure of the raw MRI data must be created. The template must contain a subject object with keys "subjectID" (subject ID) and "sessions" (array of objects each defining the session directory ("sessionDir"), session ID ("sessionID") and a "scans" array). Each "scans" object defines a particular MRI sequence by BIDS key-value pairs:
 
 |key|value|
